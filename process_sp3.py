@@ -47,16 +47,19 @@ class SP3Processor(QMainWindow):
         self.plot_adev = None
 
     def create_folder_selection(self, layout):
-        group = QGroupBox("SP3 Files Folder")
+        #group = QGroupBox("SP3 Files Folder")
+        group = QGroupBox("Каталог в файлами SP3")
         group_layout = QVBoxLayout(group)
         
         folder_layout = QHBoxLayout()
-        folder_layout.addWidget(QLabel("Folder:"))
+        #folder_layout.addWidget(QLabel("Folder:"))
+        folder_layout.addWidget(QLabel("Каталог:"))
         
         self.folder_entry = QLineEdit()
         folder_layout.addWidget(self.folder_entry)
         
-        browse_button = QPushButton("Browse...")
+        #browse_button = QPushButton("Browse...")
+        browse_button = QPushButton("Выбрать...")
         browse_button.clicked.connect(self.browse_folder)
         folder_layout.addWidget(browse_button)
         
@@ -323,7 +326,8 @@ class SP3Processor(QMainWindow):
                 
                 if not new_files:
                     print("No new .sp3 files found on the server.")
-                    QMessageBox.information(self, "Download Complete", "No new .sp3 files found on the server.")
+                    #QMessageBox.information(self, "Download Complete", "No new .sp3 files found on the server.")
+                    QMessageBox.information(self, "Загрузка завершена", "Не найдено новых файлов .sp3.")
                     return
                 
                 print(f"Found {len(new_files)} new .sp3 file(s) to download:")
