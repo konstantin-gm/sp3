@@ -17,7 +17,7 @@ class SP3Processor(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("GNSS SP3 Processor")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 500, 400)
         
         # Central widget and main layout
         central_widget = QWidget()
@@ -28,7 +28,7 @@ class SP3Processor(QMainWindow):
         self.create_folder_selection(main_layout)
         self.create_date_selection(main_layout)
         self.create_satellite_selection(main_layout)
-        self.create_processing_options(main_layout)
+        #self.create_processing_options(main_layout)
         self.create_action_buttons(main_layout)
         
         # Initialize variables
@@ -48,7 +48,7 @@ class SP3Processor(QMainWindow):
 
     def create_folder_selection(self, layout):
         #group = QGroupBox("SP3 Files Folder")
-        group = QGroupBox("Каталог в файлами SP3")
+        group = QGroupBox("Каталог с файлами SP3")
         group_layout = QVBoxLayout(group)
         
         folder_layout = QHBoxLayout()
@@ -67,16 +67,19 @@ class SP3Processor(QMainWindow):
         layout.addWidget(group)
 
     def create_date_selection(self, layout):
-        group = QGroupBox("Date Range")
+        #group = QGroupBox("Date Range")
+        group = QGroupBox("Выбрать период для обработки")
         group_layout = QHBoxLayout(group)
         
-        group_layout.addWidget(QLabel("Start Date:"))
+        #group_layout.addWidget(QLabel("Start Date:"))
+        group_layout.addWidget(QLabel("Дата начала:"))
         self.start_date = QDateEdit()
         self.start_date.setCalendarPopup(True)
         self.start_date.setDisplayFormat("yyyy-MM-dd")
         group_layout.addWidget(self.start_date)
         
-        group_layout.addWidget(QLabel("End Date:"))
+        #group_layout.addWidget(QLabel("End Date:"))
+        group_layout.addWidget(QLabel("Дата конца:"))
         self.end_date = QDateEdit()
         self.end_date.setCalendarPopup(True)
         self.end_date.setDisplayFormat("yyyy-MM-dd")
@@ -85,20 +88,23 @@ class SP3Processor(QMainWindow):
         layout.addWidget(group)
 
     def create_satellite_selection(self, layout):
-        group = QGroupBox("Satellites to Analyze")
+        #group = QGroupBox("Satellites to Analyze")
+        group = QGroupBox("Выбор спутников")
         group_layout = QVBoxLayout(group)
         
         self.sat_entry = QLineEdit()
-        self.sat_entry.setPlaceholderText("Enter satellite IDs (e.g., G01, G02, R03) separated by commas")
+        #self.sat_entry.setPlaceholderText("Enter satellite IDs (e.g., G01, G02, R03) separated by commas")
+        self.sat_entry.setPlaceholderText("Идентификаторы спутников (например, G01, G02, R03) разделитель - запятая")
         group_layout.addWidget(self.sat_entry)              
         
         # Predefined satellites for quick selection
         preset_layout = QHBoxLayout()
-        preset_layout.addWidget(QLabel("Preset Satellites:"))
+        #preset_layout.addWidget(QLabel("Preset Satellites:"))
+        preset_layout.addWidget(QLabel("Наборы спутников:"))
         
         self.preset_combo = QComboBox()
-        self.preset_combo.addItem("GLONASS-K (R26-R27)", ["R{:02d}".format(i) for i in range(26, 28)])
-        self.preset_combo.addItem("GLONASS (R01-R27)", ["R{:02d}".format(i) for i in range(1, 27)])
+        self.preset_combo.addItem("ГЛОНАСС-K2 (R26-R27)", ["R{:02d}".format(i) for i in range(26, 28)])
+        self.preset_combo.addItem("ГЛОНАСС (R01-R27)", ["R{:02d}".format(i) for i in range(1, 28)])
         self.preset_combo.addItem("GPS Block IIF (G01-G10)", ["G{:02d}".format(i) for i in range(1, 11)])
         self.preset_combo.addItem("GPS Block III (G11-G15)", ["G{:02d}".format(i) for i in range(11, 16)])        
         self.preset_combo.addItem("Galileo (E02-E22)", ["E{:02d}".format(i) for i in range(2, 22)])
@@ -110,7 +116,7 @@ class SP3Processor(QMainWindow):
         group_layout.addLayout(preset_layout)
         layout.addWidget(group)
 
-    def create_processing_options(self, layout):
+    def create_processing_options(self, layout):        
         group = QGroupBox("Processing Options")
         group_layout = QHBoxLayout(group)
         
@@ -131,17 +137,20 @@ class SP3Processor(QMainWindow):
     def create_action_buttons(self, layout):
         button_layout = QHBoxLayout()
         
-        self.download_button = QPushButton("Download SP3 Files")
+        #self.download_button = QPushButton("Download SP3 Files")
+        self.download_button = QPushButton("Загрузить файлы SP3")
         self.download_button.clicked.connect(self.sync_sp3_files)
         self.download_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
         button_layout.addWidget(self.download_button)
         
-        self.process_button = QPushButton("Process SP3 Files")
+        #self.process_button = QPushButton("Process SP3 Files")
+        self.process_button = QPushButton("Обработать файлы SP3")
         self.process_button.clicked.connect(self.process_files)
         self.process_button.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
         button_layout.addWidget(self.process_button)
         
-        self.plot_button = QPushButton("Show Plot")
+        #self.plot_button = QPushButton("Show Plot")
+        self.plot_button = QPushButton("Графики")
         self.plot_button.clicked.connect(self.show_plot)
         self.plot_button.setStyleSheet("background-color: #2196F3; color: white; font-weight: bold;")
         self.plot_button.setEnabled(False)
@@ -213,7 +222,8 @@ class SP3Processor(QMainWindow):
                                 continue
             return data, current_epoch
         except Exception as e:
-            QMessageBox.warning(self, "File Error", f"Error parsing {os.path.basename(file_path)}:\n{str(e)}")
+            #QMessageBox.warning(self, "File Error", f"Error parsing {os.path.basename(file_path)}:\n{str(e)}")
+            QMessageBox.warning(self, "Ошибка файла", f"Ошибка парсинга файла {os.path.basename(file_path)}:\n{str(e)}")
             return {}
 
     def detrend(self, t, x, n=1):
@@ -359,7 +369,8 @@ class SP3Processor(QMainWindow):
         except Exception as e:
             print(f"Error: {str(e)}")
         
-        QMessageBox.information(self, "Download Complete", "Files have been downloaded from FTP-server")
+        #QMessageBox.information(self, "Download Complete", "Files have been downloaded from FTP-server")
+        QMessageBox.information(self, "Загрузка завершена", "Все новые файлы загружены с FTP-сервера")
   
   
     def process_files(self):
@@ -368,19 +379,22 @@ class SP3Processor(QMainWindow):
         start_date = self.start_date.date().toPyDate()
         end_date = self.end_date.date().toPyDate()
         sat_list = [sat.strip().upper() for sat in self.sat_entry.text().split(',') if sat.strip()]
-        window_size = int(self.filter_size.currentText())
+        window_size = 7#int(self.filter_size.currentText())
         
         # Validate inputs
         if not os.path.exists(self.sp3_folder):
-            QMessageBox.critical(self, "Error", f"Folder not found: {self.sp3_folder}")
+            #QMessageBox.critical(self, "Error", f"Folder not found: {self.sp3_folder}")
+            QMessageBox.critical(self, "Ошибка", f"Каталог не найден: {self.sp3_folder}")
             return
         
         if end_date < start_date:
-            QMessageBox.critical(self, "Error", "End date must be after start date")
+            #QMessageBox.critical(self, "Error", "End date must be after start date")
+            QMessageBox.critical(self, "Ошибка", "Конечная дата не может быть раньше начальной")
             return
         
         if not sat_list:
-            QMessageBox.critical(self, "Error", "Enter at least one satellite")
+            #QMessageBox.critical(self, "Error", "Enter at least one satellite")
+            QMessageBox.critical(self, "Ошибка", "Укажите хотя бы один спутник")
             return
         
         # Find SP3 files in the date range
@@ -392,8 +406,10 @@ class SP3Processor(QMainWindow):
                     sp3_files.append((file_date, os.path.join(self.sp3_folder, filename)))
         
         if not sp3_files:
-            QMessageBox.information(self, "No Files", 
-                                   "No SP3 files found in the selected date range")
+            #QMessageBox.information(self, "No Files", 
+            #                       "No SP3 files found in the selected date range")
+            QMessageBox.information(self, "Нет файлов", 
+                                   "Файлы SP3 не найдены для выбранных дат")
             return
         
         # Sort files by date
@@ -444,12 +460,15 @@ class SP3Processor(QMainWindow):
         
         # Enable plot button
         self.plot_button.setEnabled(True)
-        QMessageBox.information(self, "Processing Complete", 
-                               f"Processed data for {len([sat for sat in sat_list if sat in self.data and 'detrended' in self.data[sat]])} satellites")
+        #QMessageBox.information(self, "Processing Complete", 
+        #                       f"Processed data for {len([sat for sat in sat_list if sat in self.data and 'detrended' in self.data[sat]])} satellites")
+        QMessageBox.information(self, "Обработка завершена", 
+                               f"Данные обработаны для {len([sat for sat in sat_list if sat in self.data and 'detrended' in self.data[sat]])} спутников")
 
     def show_plot(self):
         if not self.data:
-            QMessageBox.warning(self, "No Data", "Process data first before plotting")
+            #QMessageBox.warning(self, "No Data", "Process data first before plotting")
+            QMessageBox.warning(self, "Нет данных", "Необходимо обработать данные перед отрисовкой")
             return
         
         # Create plot window if it doesn't exist
@@ -463,7 +482,7 @@ class SP3Processor(QMainWindow):
             self.plot_adev = PlotADEV()
         
         # Get unit conversion factor
-        unit = self.unit_combo.currentText().lower()
+        unit = "nanoseconds" #self.unit_combo.currentText().lower()
         if unit == "microseconds":
             factor = 1e6
             #unit_label = "μs"
@@ -606,7 +625,7 @@ class PlotFreq(QMainWindow):
             t0 = t[0]
             t_sec = np.array([(ti - t0).total_seconds() for ti in t[:-kdec]])            
             c = np.polyfit(t_sec, y, 1)
-            print(c[0]*86400)
+            #print(c[0]*86400)
             
             # Plot processed data
             color = colors[i % len(colors)]
