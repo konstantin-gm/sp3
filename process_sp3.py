@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                              QLabel, QLineEdit, QPushButton, QDateEdit, QFileDialog, 
                              QMessageBox, QComboBox, QGroupBox)
 from PyQt5.QtCore import QDate
+from PyQt5.QtCore import Qt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -298,6 +299,7 @@ class SP3Processor(QMainWindow):
         return filtered
 
     def sync_sp3_files(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
     
         ftp_host = 'ftp.glonass-iac.ru'
         ftp_folder = '/MCC/PRODUCTS/Attestat/SP3/2025'  # Leave empty for root directory
@@ -370,10 +372,13 @@ class SP3Processor(QMainWindow):
             print(f"Error: {str(e)}")
         
         #QMessageBox.information(self, "Download Complete", "Files have been downloaded from FTP-server")
+        QApplication.restoreOverrideCursor()
         QMessageBox.information(self, "Загрузка завершена", "Все новые файлы загружены с FTP-сервера")
   
   
-    def process_files(self):
+    def process_files(self):        
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        
         # Get user inputs
         self.sp3_folder = self.folder_entry.text()
         start_date = self.start_date.date().toPyDate()
@@ -384,16 +389,19 @@ class SP3Processor(QMainWindow):
         # Validate inputs
         if not os.path.exists(self.sp3_folder):
             #QMessageBox.critical(self, "Error", f"Folder not found: {self.sp3_folder}")
-            QMessageBox.critical(self, "Ошибка", f"Каталог не найден: {self.sp3_folder}")
+            QApplication.restoreOverrideCursor()
+            QMessageBox.critical(self, "Ошибка", f"Каталог не найден: {self.sp3_folder}")            
             return
         
         if end_date < start_date:
             #QMessageBox.critical(self, "Error", "End date must be after start date")
+            QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Ошибка", "Конечная дата не может быть раньше начальной")
             return
         
         if not sat_list:
             #QMessageBox.critical(self, "Error", "Enter at least one satellite")
+            QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Ошибка", "Укажите хотя бы один спутник")
             return
         
@@ -408,6 +416,7 @@ class SP3Processor(QMainWindow):
         if not sp3_files:
             #QMessageBox.information(self, "No Files", 
             #                       "No SP3 files found in the selected date range")
+            QApplication.restoreOverrideCursor()
             QMessageBox.information(self, "Нет файлов", 
                                    "Файлы SP3 не найдены для выбранных дат")
             return
@@ -462,6 +471,7 @@ class SP3Processor(QMainWindow):
         self.plot_button.setEnabled(True)
         #QMessageBox.information(self, "Processing Complete", 
         #                       f"Processed data for {len([sat for sat in sat_list if sat in self.data and 'detrended' in self.data[sat]])} satellites")
+        QApplication.restoreOverrideCursor()
         QMessageBox.information(self, "Обработка завершена", 
                                f"Данные обработаны для {len([sat for sat in sat_list if sat in self.data and 'detrended' in self.data[sat]])} спутников")
 
